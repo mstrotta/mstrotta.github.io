@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>braindata.com</title>
+		<style>
+			body { margin: 0; }
+			canvas { width:100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="static/three.min.js"></script>
+		<script src="static/STLLoader.js"></script>
+		<script>
+			var SCALE = 1.00;
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera(
+					85, 
+					window.innerWidth / window.innerHeight,
+					10, 250);
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize(SCALE * window.innerWidth, 
+					SCALE *window.innerHeight);
+
+			var loader = new THREE.STLLoader();
+			loader.load(
+				'./static/surfs/lh.pial.stl', 
+				function(geometry) {
+					var material = new THREE.MeshToonMaterial(
+							{color:0x00ff00});
+					var brain = new THREE.Mesh(geometry, material);
+					scene.add(brain); 
+					camera.position.z = 150;
+					renderer.render(scene, camera);
+					var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.4 );
+					scene.add( directionalLight );
+					var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+					scene.add( light );
+
+					//var light = new THREE.PointLight( 0xff0000, 1, 100 );
+					//light.position.set( 50, 50, 50 );
+					//scene.add( light );
+
+					var animate = function() {
+						requestAnimationFrame(animate);
+						//brain.rotation.x += 0.01;
+						brain.rotation.y += 0.01;
+						renderer.render(scene, camera);
+
+					};
+					animate();
+				},
+				function() { console.log('Loading'); },
+				function(msg) { 
+					alert('failure');
+				});
+
+			document.body.appendChild(renderer.domElement)
+
+		</script>
+		<div>
+			Awesome website!!
+		</div>
+	</body>
+</html>
